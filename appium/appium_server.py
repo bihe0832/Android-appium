@@ -40,6 +40,7 @@ if __name__ == '__main__':
 
     # 可用设备列表
     devices_list=[]
+    utils.cmd("adb kill-server")   
     result = utils.cmd("adb devices")   
     print(result)
     for device in result.split('\n'):

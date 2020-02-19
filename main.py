@@ -14,14 +14,18 @@ import utils
 import zixie_main
 
 def appium_desired(udid,port):
+    f = open('./log/appium_client_'+udid+'_'+str(port)+'.log', 'w')
+    # sys.stdout = f
     desired_caps={}
     desired_caps['platformName']= "Android"
     desired_caps['deviceName']= udid
-    print('appium port:%s start run %s at %s' %(port,udid,ctime()))
+    print('%s start run on appium port:%s at %s' %(udid,port,ctime()))
     driver=webdriver.Remote('http://'+appium_const.HOST+':'+str(port)+'/wd/hub',desired_caps)
+    sleep(appium_const.IMPLICITLY_WAIT_SHORT)
     driver.implicitly_wait(appium_const.IMPLICITLY_WAIT_SHORT)
     zixie_main.startTest(driver,udid)
-
+ 	driver.quit()
+    f.close()
 # 可用设备列表
 devices_list=[]
 #appium进程组

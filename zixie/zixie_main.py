@@ -11,6 +11,6 @@ import time
 
 def startTest(driver,udid):
     utils.showDevice(udid)
-    utils.wechatlogin(driver,udid,zixie_const.WECHAT_ID,zixie_const.WECHAT_PASSWORD)
+    # utils.wechatlogin(driver,udid,zixie_const.WECHAT_ID,zixie_const.WECHAT_PASSWORD)
 
 

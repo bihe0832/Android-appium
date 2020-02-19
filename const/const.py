@@ -22,7 +22,7 @@ zixie_const = _const()
 zixie_const.WECHAT_ID= ""
 zixie_const.WECHAT_PASSWORD = ""
 zixie_const.TEMP_UUID="4fb845e3"
-zixie_const.TEMP_PORT=4725
+zixie_const.TEMP_PORT=4727
 
 
 
