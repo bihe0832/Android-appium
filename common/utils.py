@@ -37,26 +37,121 @@ def showDevice(uuid):
     cmd("adb -s " +uuid+ " shell wm size")
     print("************** device info of :"+uuid+" **************")
 
-def wechatlogin(driver,uuid, username,password):
-    cmd("adb -s " +uuid+ " shell pm clear com.tencent.mm")
-
+def wechatLogoutWithCheck(driver,uuid):
     log("start wechat app")
     cmd("adb -s " +uuid+ " shell am start com.tencent.mm/com.tencent.mm.ui.LauncherUI")
+    sleep(appium_const.IMPLICITLY_WAIT_SHORT)
+    activitylist=[
+        ".plugin.account.ui.LoginPasswordUI",
+        ".plugin.account.ui.LoginUI",
+        ".plugin.account.ui.WelcomeActivity",
+        ".plugin.account.ui.MobileInputUI"
+
+    ]
+    activity_name = driver.current_activity
+    print(activity_name)
+    if activity_name in activitylist:
+        log("no need logout")
+        return True
+    else:
+        try:
+            driver.wait_activity(".ui.LauncherUI", appium_const.IMPLICITLY_WAIT_SHORT)
+        except Exception as e:
+            log('repr .ui.LauncherUI:\t' + repr(e))
+            screenshot(driver, os.path.basename(__file__))
+            return False
+        else:
+            try:
+                return wechatLogout(driver,uuid)
+            except Exception as e:
+                log('repr main:\t'+ repr(e))
+                screenshot(driver, os.path.basename(__file__))
+                return False
+
+def wechatLogout(driver,uuid):
     try:
-        driver.wait_activity(".plugin.account.ui.WelcomeActivity", appium_const.IMPLICITLY_WAIT_SHORT)
+        driver.wait_activity(".ui.LauncherUI", appium_const.IMPLICITLY_WAIT_SHORT)
     except Exception as e:
-        log('repr ui.WelcomeActivity:\t'+ repr(e))
+        log('repr .ui.LauncherUI:\t' + repr(e))
+        screenshot(driver, os.path.basename(__file__))
         return False
 
     try:
-        WebDriverWait(driver, appium_const.IMPLICITLY_WAIT_SHORT).until(lambda x: x.find_element_by_xpath('//android.widget.Button[contains(@text, "登录")]').is_displayed())
+        WebDriverWait(driver, appium_const.IMPLICITLY_WAIT_LONG).until(lambda x: x.find_element_by_xpath("//android.widget.FrameLayout[@content-desc=\"当前所在页面,与的聊天\"]/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout[1]/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.LinearLayout/android.widget.RelativeLayout[4]/android.widget.LinearLayout/android.widget.RelativeLayout/android.widget.ImageView[1]").is_displayed())
     except Exception as e:
-        log('repr login:\t'+ repr(e))
+        log('repr main:\t'+ repr(e))
         screenshot(driver, os.path.basename(__file__))
         return False
-    log("start login")
-    driver.find_element_by_xpath('//android.widget.Button[contains(@text, "登录")]').click()
+    else:
+        driver.find_element_by_xpath("//android.widget.FrameLayout[@content-desc=\"当前所在页面,与的聊天\"]/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout[1]/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.LinearLayout/android.widget.RelativeLayout[4]/android.widget.LinearLayout/android.widget.RelativeLayout/android.widget.ImageView[1]").click()
     
+    try:
+        TouchAction(driver)   .press(x=578, y=2094)   .move_to(x=582, y=747)   .release()   .perform()
+    except Exception as e:
+        log('repr main:\t'+ repr(e))
+        screenshot(driver, os.path.basename(__file__))
+    
+    try:
+        WebDriverWait(driver, appium_const.IMPLICITLY_WAIT_LONG).until(lambda x: x.find_element_by_xpath('//android.widget.TextView[contains(@text, "设置")]').is_displayed())
+    except Exception as e:
+        log('repr main:\t'+ repr(e))
+        screenshot(driver, os.path.basename(__file__))
+        return False
+    else:
+        driver.find_element_by_xpath('//android.widget.TextView[contains(@text, "设置")]').click()
+    
+    try:
+        TouchAction(driver)   .press(x=578, y=2094)   .move_to(x=582, y=747)   .release()   .perform()
+    except Exception as e:
+        log('repr main:\t'+ repr(e))
+        screenshot(driver, os.path.basename(__file__))
+    
+    driver.find_element_by_xpath('//android.widget.TextView[contains(@text, "退出")]').click()
+    driver.find_element_by_xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.ScrollView/android.widget.LinearLayout/android.support.v7.widget.RecyclerView/android.widget.LinearLayout[1]/android.widget.RelativeLayout").click()
+    driver.find_element_by_xpath("/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout[2]/android.widget.LinearLayout/android.widget.Button[2]").click()
+    
+    try:
+        driver.wait_activity(".plugin.account.ui.LoginPasswordUI", appium_const.IMPLICITLY_WAIT_SHORT)
+    except Exception as e:
+        log('repr .ui.LauncherUI:\t' + repr(e))
+        screenshot(driver, os.path.basename(__file__))
+        return False
+    else:
+        return True
+
+def wechatlogin(driver,uuid, username,password):
+    cmd("adb -s " +uuid+ " shell am force-stop com.tencent.mm")
+    log("start wechat app")
+    cmd("adb -s " +uuid+ " shell am start com.tencent.mm/com.tencent.mm.ui.LauncherUI")
+    if wechatLogoutWithCheck(driver,uuid) == False:
+        log('repr logout failed:\t')
+        screenshot(driver, os.path.basename(__file__))
+        return False
+
+    try:
+        driver.wait_activity(".plugin.account.ui.LoginPasswordUI", appium_const.IMPLICITLY_WAIT_SHORT)
+    except Exception as e:
+        log('repr ui.LoginPasswordUI:\t'+ repr(e))
+        try:
+            driver.wait_activity(".plugin.account.ui.WelcomeActivity", appium_const.IMPLICITLY_WAIT_SHORT)
+        except Exception as e:
+            log('repr ui.WelcomeActivity:\t'+ repr(e))
+            return False
+        try:
+            log("start login")
+            driver.find_element_by_xpath('//android.widget.Button[contains(@text, "登录")]').click()
+        except Exception as e:
+            log('repr login:\t'+ repr(e))
+            screenshot(driver, os.path.basename(__file__))
+            return False
+    else :
+        try:
+            driver.find_element_by_xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout[2]/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.RelativeLayout/android.widget.LinearLayout/android.widget.Button[2]").click()
+            driver.find_element_by_xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.ScrollView/android.widget.LinearLayout/android.support.v7.widget.RecyclerView/android.widget.LinearLayout[1]/android.widget.RelativeLayout/android.widget.LinearLayout/android.widget.TextView").click()
+        except Exception as e:
+            log('repr ui.WelcomeActivity:\t'+ repr(e))
+            return False
+
     try:
         driver.wait_activity(".plugin.account.ui.MobileInputUI", appium_const.IMPLICITLY_WAIT_SHORT)
     except Exception as e:
@@ -78,8 +173,11 @@ def wechatlogin(driver,uuid, username,password):
     pswd.send_keys(password)
     
     driver.find_element_by_xpath("/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout[2]/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.ScrollView/android.widget.LinearLayout/android.widget.Button[2]").click()
-    driver.find_element_by_xpath('//android.widget.Button[contains(@text, "我知道了")]').click()
-
+    try:
+       driver.find_element_by_xpath('//android.widget.Button[contains(@text, "我知道了")]').click()
+    except Exception as e:
+        log('repr .ui.LauncherUI:\t' + repr(e))    
+    sleep(appium_const.IMPLICITLY_WAIT_MIDDLE)
     try:
         driver.wait_activity(".ui.LauncherUI", appium_const.IMPLICITLY_WAIT_SHORT)
     except Exception as e:
@@ -163,7 +261,7 @@ def timlogin(driver,uuid, username,password):
         log('repr login to main success')
         return True
 
-def qqlogin(driver,uuid, username,password):
+def qqclearlogin(driver,uuid, username,password):
     cmd("adb -s " +uuid+ " shell pm clear com.tencent.mobileqq")
     log("start qq app")
     cmd("adb -s " +uuid+ " shell am start com.tencent.mobileqq/com.tencent.mobileqq.activity.SplashActivity")

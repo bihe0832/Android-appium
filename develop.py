@@ -42,5 +42,6 @@ if __name__ == '__main__':
     # hardytest()
     driver=webdriver.Remote('http://localhost:'+str(port)+'/wd/hub',desired_caps)
     driver.implicitly_wait(appium_const.IMPLICITLY_WAIT_SHORT)
+    # utils.wechatlogin(driver,uuid,zixie_const.WECHAT_ID,zixie_const.WECHAT_PASSWORD)
 	# utils.qqlogin(driver,uuid,zixie_const.WECHAT_ID,zixie_const.WECHAT_PASSWORD)
     zixie_main.startTest(driver,zixie_const.TEMP_UUID)
