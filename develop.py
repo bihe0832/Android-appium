@@ -40,7 +40,7 @@ if __name__ == '__main__':
     desired_caps['deviceName']= uuid
     print('appium start run %s at %s' %(uuid,ctime()))
     # hardytest()
-    driver=webdriver.Remote('http://localhost:'+str(port)+'/wd/hub',desired_caps)
+    driver=webdriver.Remote('http://127.0.0.1:'+str(port)+'/wd/hub',desired_caps)
     driver.implicitly_wait(appium_const.IMPLICITLY_WAIT_SHORT)
     # utils.wechatlogin(driver,uuid,zixie_const.WECHAT_ID,zixie_const.WECHAT_PASSWORD)
 	# utils.qqlogin(driver,uuid,zixie_const.WECHAT_ID,zixie_const.WECHAT_PASSWORD)

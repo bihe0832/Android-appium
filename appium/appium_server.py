@@ -18,7 +18,10 @@ def appium_start(host,port):
     if port_utils.check_port(port) == True:
         port_utils.release_port(port)
 
-    cmd = '/usr/local/bin/appium -a ' + host + ' -p ' + str(port) + ' -g ./log/appium_server_'+str(port)+'.log'
+    utils.cmd("/usr/local/bin/appium --version")
+    # cmd = '/usr/local/bin/appium  --allow-insecure chromedriver_autodownload -a ' + host + ' -p ' + str(port) + ' -g ./log/appium_server_'+str(port)+'.log'        
+    cmd = '/usr/local/bin/appium  --allow-insecure chromedriver_autodownload -a ' + host + ' -p ' + str(port) + ' -g ./log/appium_server_'+str(port)+'.log'     
+
     print('%s at %s' %(cmd, ctime()))
     utils.cmd(cmd)
 
