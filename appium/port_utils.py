@@ -29,7 +29,7 @@ def release_port(port):
             print(portInfo.split(' '))
             print((' '.join(portInfo.split())).split(' '))
             # 关闭被占用端口的pid
-            cmd_kill='kill ' + (' '.join(portInfo.split())).split(' ')[1]
+            cmd_kill='kill -9 ' + (' '.join(portInfo.split())).split(' ')[1]
             print(cmd_kill)
             os.popen(cmd_kill)
             print('release_port port %s already be in use ,but now is available!' % port)

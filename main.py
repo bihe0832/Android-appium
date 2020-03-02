@@ -19,7 +19,12 @@ def appium_desired(udid,port):
     desired_caps={}
     desired_caps['platformName']= "Android"
     desired_caps['deviceName']= udid
-   
+    desired_caps["chromeOptions"] = {
+        "androidProcess":"com.bihe0832.readhub:web",
+        "androidPackage":"com.bihe0832.readhub"
+    }
+    desired_caps["chromedriverExecutableDir"] = "./appium"
+
     print('%s start run on appium port:%s at %s' %(udid,port,ctime()))
     driver=webdriver.Remote('http://'+appium_const.HOST+':'+str(port)+'/wd/hub',desired_caps)
     sleep(appium_const.IMPLICITLY_WAIT_SHORT)
@@ -49,6 +54,7 @@ def appium_desired_sync(firstPort):
 
 if __name__ == '__main__':
     utils.cmd("adb kill-server") 
+    port_utils.check_port(5037)
     result = utils.cmd("adb devices")   
     print(result)
     for device in result.split('\n'):

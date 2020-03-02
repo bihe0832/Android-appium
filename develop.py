@@ -24,7 +24,9 @@ def hardytest():
 
 if __name__ == '__main__':
     uuid=""
-    port=4723
+    port=4725
+    utils.cmd("adb kill-server") 
+    port_utils.check_port(5037)
     result = utils.cmd("adb devices")   
     print(result)
     for device in result.split('\n'):
@@ -32,12 +34,19 @@ if __name__ == '__main__':
                 uuid=device.split('\t')[0]
                 break
     print(uuid)
-
+    if uuid == "":
+        exit 
     utils.showDevice(uuid)
     # reinstall()
     desired_caps={}
     desired_caps['platformName']= "Android"
     desired_caps['deviceName']= uuid
+    desired_caps["chromeOptions"] = {
+        "androidProcess":"com.bihe0832.readhub:web",
+        "androidPackage":"com.bihe0832.readhub"
+    }
+    desired_caps["chromedriverExecutableDir"] = "./appium"
+
     print('appium start run %s at %s' %(uuid,ctime()))
     # hardytest()
     driver=webdriver.Remote('http://127.0.0.1:'+str(port)+'/wd/hub',desired_caps)

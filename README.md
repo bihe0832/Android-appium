@@ -111,3 +111,8 @@
 - appium爬坑之iMac上基于appium多设备并发测试
 
     [https://blog.bihe0832.com/appium-command.html](https://blog.bihe0832.com/appium-command.html)
+
+- appium 爬坑之基于 Chromedriver 测试 Android webview 
+	
+	[https://blog.bihe0832.com/appium-android-webview.html](https://blog.bihe0832.com/appium-android-webview.html)
+
